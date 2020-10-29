@@ -12,12 +12,12 @@ import torchvision.datasets as datasets
 import resnet
 
 # select GPU
-os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "2, 3"
+# os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+# os.environ["CUDA_VISIBLE_DEVICES"] = "2, 3"
 
-epochs = 50
+epochs = 200
 batch_size = 128
-lr = 0.05
+lr = 0.1
 save_dir = './save_dir'
 
 
@@ -58,11 +58,21 @@ def main():
 
     # define loss function (criterion) and optimizer
     criterion = nn.CrossEntropyLoss().cuda()
-    optimizer = torch.optim.SGD(model.parameters(), lr)
+    optimizer = torch.optim.SGD(model.parameters(), lr, 
+                                momentum=0.9,
+                                weight_decay=1e-4)
 
     best_prec1 = 0
 
     for epoch in range(epochs):
+
+        # adjust learning rate
+        if epoch == 100:
+            for p in optimizer.param_groups:
+                p['lr'] *= 0.1
+        if epoch == 150:
+            for p in optimizer.param_groups:
+                p['lr'] *= 0.1
 
         # train for one epoch
         train(train_loader, model, criterion, optimizer, epoch)
@@ -75,7 +85,7 @@ def main():
         best_prec1 = max(prec1, best_prec1)
 
         if is_best:
-            torch.save(model.state_dict(), os.path.join(save_dir, 'bast_model.pth'))
+            torch.save(model.state_dict(), os.path.join(save_dir, 'best_model.pth'))
 
 
 def train(train_loader, model, criterion, optimizer, epoch):

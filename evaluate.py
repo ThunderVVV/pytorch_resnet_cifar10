@@ -12,8 +12,8 @@ import torchvision.datasets as datasets
 import resnet
 
 # select GPU
-os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "2, 3"
+# os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+# os.environ["CUDA_VISIBLE_DEVICES"] = "2, 3"
 
 model_path = './save_dir/best_model.pth'
 
